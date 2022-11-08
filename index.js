@@ -1,4 +1,4 @@
-const PLUGIN_ID = 'signalk-hwt901b-imu';
+const PLUGIN_ID = 'signalk-hwt901b-imu-plus';
 const SerialPort = require('serialport')
 const DelimiterParser = require('@serialport/parser-delimiter')
 
