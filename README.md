@@ -1,3 +1,11 @@
+
+
+New version with added features of the great plugin W-Geronius/signalk-hwt901b-imu (https://github.com/W-Geronius/signalk-hwt901b-imu)
+
+Original documentation (will be update)
+
+======
+
 SignalK node server plugin (BETA) reading roll, pitch and magnetic heading from [WITMOTION's HWT910B](https://www.wit-motion.com/10-axis/witmotion-hwt901b-rs232-10.html) sensor
 
 #### INPUT:
