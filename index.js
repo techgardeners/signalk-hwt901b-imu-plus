@@ -217,23 +217,24 @@ module.exports = function (app) {
              * *****************************************************************
              *******************************************************************/
 
-            const time_year = data.readUInt8(0)
-            const time_month = data.readUInt8(1)
-            const time_day = data.readUInt8(2)
-            const time_hour = data.readUInt8(3)
-            const time_minute = data.readUInt8(4)
-            const time_second = data.readUInt8(5)
-            const time_millisecond = data.readUInt16LE(6)
+            const time_year = 2000 + data.readUInt8(0)
+            const time_month = data.readUInt8(1) < 10 ? '0'+ data.readUInt8(1) : data.readUInt8(1)
+            const time_day = data.readUInt8(2) < 10 ? '0'+ data.readUInt8(2) : data.readUInt8(2)
+            const time_hour = data.readUInt8(3) < 10 ? '0'+ data.readUInt8(3) : data.readUInt8(3)
+            const time_minute = data.readUInt8(4) < 10 ? '0'+ data.readUInt8(4) : data.readUInt8(4)
+            const time_second = data.readUInt8(5) < 10 ? '0'+ data.readUInt8(5) : data.readUInt8(5)
+            let time_millisecond = data.readUInt8(6) < 100 ? '0'+ data.readUInt8(6) : data.readUInt8(6)
+            time_millisecond = data.readUInt8(6) < 10 ? '0'+ time_millisecond : time_millisecond
             const time_checksum = data.readUInt8(8)
 
             app.debug(
-              'Year: ', (2000+time_year).toFixed(0),
-              'Month: ', time_month.toFixed(0),
-              'Day: ', time_day.toFixed(0),
-              'Hour: ', time_hour.toFixed(0),
-              'Minute: ', time_minute.toFixed(0),
-              'Second: ', time_second.toFixed(0),
-              'Millisecond: ', time_millisecond.toFixed(0)
+              'Year: ', time_year,
+              'Month: ', time_month,
+              'Day: ', time_day,
+              'Hour: ', time_hour,
+              'Minute: ', time_minute,
+              'Second: ', time_second,
+              'Millisecond: ', time_millisecond
             )
 
 
@@ -385,16 +386,8 @@ module.exports = function (app) {
                     '$source': 'WIT.' + (index + 1).toString(),
                     values: [
                         {
-                            path: 'HWT901B.time',
-                            value: {
-                                year: time_year,
-                                month: time_month,
-                                day: time_day,
-                                hour : time_hour,
-                                minute: time_minute,
-                                second: time_second,
-                                millisecond: time_millisecond
-                            }
+                            path: 'navigation.datetime',
+                            value: time_year + '-' + time_month + '-' + time_day + 'T' + time_hour + ':' + time_minute + ':' + time_second + '.' + time_millisecond + 'Z'
                         },
                         {
                             path: 'navigation.acceleration',
