@@ -261,14 +261,14 @@ module.exports = function (app) {
             const acc_ax = data.readInt16LE(acc_offset+2)/32768*16*9.8
             const acc_ay = data.readInt16LE(acc_offset+4)/32768*16*9.8
             const acc_az = data.readInt16LE(acc_offset+6)/32768*16*9.8
-            const temp = data.readInt16LE(acc_offset+8)/100
+            const temp = (data.readInt16LE(acc_offset+8)/100) + 273.15 // To Kelvin value
             const acc_checksum = data.readUInt8(acc_offset+10)
 
             app.debug(
-              'acc_ax: ', acc_ax,
-              'acc_ay: ', acc_ay,
-              'acc_az: ', acc_az,
-              'temp: ', temp
+              '° acc_ax: ', acc_ax,
+              '° acc_ay: ', acc_ay,
+              '° acc_az: ', acc_az,
+              '(K) temp: ', temp
             )
 
             /******************************************************************
@@ -292,14 +292,14 @@ module.exports = function (app) {
             const ang_wx = data.readInt16LE(ang_offset+2)/32768*2000
             const ang_wy = data.readInt16LE(ang_offset+4)/32768*2000
             const ang_wz = data.readInt16LE(ang_offset+6)/32768*2000
-            const ang_temp = data.readInt16LE(ang_offset+8)/100
+            const ang_temp = (data.readInt16LE(ang_offset+8)/100) + 273.15
             const ang_checksum = data.readUInt8(ang_offset+10)
 
             app.debug(
-              'ang_wx: ', ang_wx,
-              'ang_wy: ', ang_wy,
-              'ang_wz: ', ang_wz,
-              'temp: ', ang_temp
+              '° ang_wx: ', ang_wx,
+              '° ang_wy: ', ang_wy,
+              '° ang_wz: ', ang_wz,
+              '(K) temp: ', ang_temp
             )
 
             /******************************************************************
@@ -325,8 +325,9 @@ module.exports = function (app) {
             const pitch = toRad(data.readUInt16LE(a_offset+ 2))
             const roll = toRad(data.readUInt16LE(a_offset+ 4))
             const yaw = toRad(data.readUInt16LE(a_offset+ 6))
-            let hdm = (360.00 - yaw * decodeWit + zOffset);
+            let hdm = (360.00 - data.readUInt16LE(a_offset+ 6) * decodeWit + zOffset);
             (hdm > 360) ? hdm = (hdm - 360) * factRad : hdm *= factRad
+
             const version = data.readUInt16LE(a_offset+ 8)
             const a_checksum = data.readUInt8(a_offset+ 10)
 
@@ -354,12 +355,12 @@ module.exports = function (app) {
 
             const atmospheric_offset = 42;
             const atmospheric_header = data.readInt16LE(atmospheric_offset+ 0);
-            const atmospheric_pressure = (parseInt(data.readInt32LE(atmospheric_offset+ 2))/100)
+            const atmospheric_pressure = parseInt(data.readInt32LE(atmospheric_offset+ 2))
             const atmospheric_height = (parseInt(data.readInt32LE(atmospheric_offset+ 6))/100)
             const atmospheric_checksum = data.readUInt8(a_offset+ 10)
 
             app.debug(
-              '(hPa) Pressure:', atmospheric_pressure.toFixed(2),
+              '(Pa) Pressure:', atmospheric_pressure,
               '(m) Altitude:', atmospheric_height.toFixed(2),
             )
 
@@ -390,32 +391,48 @@ module.exports = function (app) {
                             value: time_year + '-' + time_month + '-' + time_day + 'T' + time_hour + ':' + time_minute + ':' + time_second + '.' + time_millisecond + 'Z'
                         },
                         {
-                            path: 'navigation.acceleration',
-                            value: {
-                                ax: acc_ax,
-                                ay: acc_ay,
-                                az: acc_az
-                            }
+                            path: 'navigation.acceleration.ax',
+                            value: acc_ax
                         },
                         {
-                            path: 'navigation.angular_velocity',
-                            value: {
-                                wx: ang_wx,
-                                wy: ang_wy,
-                                wz: ang_wz
-                            }
+                            path: 'navigation.acceleration.ay',
+                            value: acc_ay
                         },
                         {
-                            path: 'environment.pressure',
+                            path: 'navigation.acceleration.az',
+                            value: acc_az
+                        },
+                        {
+                            path: 'navigation.angular_velocity.wx',
+                            value: ang_wx
+                        },
+                        {
+                            path: 'navigation.angular_velocity.wy',
+                            value: ang_wy
+                        },
+                        {
+                            path: 'navigation.angular_velocity.wz',
+                            value: ang_wz
+                        },
+                        {
+                            path: 'environment.inside.pressure',
                             value: atmospheric_pressure
                         },
                         {
-                            path: 'environment.height',
-                            value: atmospheric_height
+                            path: 'environment.inside.temperature',
+                            value: temp
                         },
                         {
-                            path: 'environment.temperature',
-                            value: temp
+                            path: 'navigation.speedOverGround',
+                            value: 0
+                        },
+                        {
+                            path: 'navigation.position',
+                            value: {
+                                longitude: 0,
+                                latitude : 0,
+                                altitude: atmospheric_height
+                            }
                         },
                         {
                             path: 'navigation.headingMagnetic',
