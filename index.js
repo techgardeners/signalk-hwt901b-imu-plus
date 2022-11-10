@@ -226,8 +226,8 @@ module.exports = function (app) {
             const time_millisecond = data.readUInt16LE(6)
             const time_checksum = data.readUInt8(8)
 
-            app.log(
-              'Year: ', (2000 +time_year).toFixed(0),
+            app.debug(
+              'Year: ', (2000+time_year).toFixed(0),
               'Month: ', time_month.toFixed(0),
               'Day: ', time_day.toFixed(0),
               'Hour: ', time_hour.toFixed(0),
@@ -263,7 +263,7 @@ module.exports = function (app) {
             const temp = data.readInt16LE(acc_offset+8)/100
             const acc_checksum = data.readUInt8(acc_offset+10)
 
-            app.log(
+            app.debug(
               'acc_ax: ', acc_ax,
               'acc_ay: ', acc_ay,
               'acc_az: ', acc_az,
@@ -294,7 +294,7 @@ module.exports = function (app) {
             const ang_temp = data.readInt16LE(ang_offset+8)/100
             const ang_checksum = data.readUInt8(ang_offset+10)
 
-            app.log(
+            app.debug(
               'ang_wx: ', ang_wx,
               'ang_wy: ', ang_wy,
               'ang_wz: ', ang_wz,
@@ -439,6 +439,7 @@ module.exports = function (app) {
                     ]
                 }]
             })
+            setPluginStatus('Connected and receiving data')
         }
 
         function toRad(value) {
