@@ -95,7 +95,7 @@ module.exports = function (app) {
             plugin.serialPorts[index] = serial
 
             serial.on('open', function () {
-                const parser = serial.pipe(new DelimiterParser({ delimiter: '\x55\x53' }))
+                const parser = serial.pipe(new DelimiterParser({ delimiter: '\x55\x50' }))
                 plugin.reconnectDelay = 1000
                 parser.on('data', data => { parseData(device.zOffset, data, index) })
                 setPluginStatus(`connected to ${device.usbDevice}:${index}`)
@@ -137,7 +137,7 @@ module.exports = function (app) {
 
         // set data set unconditionally
         setTimeout(() => {
-            sendCommand(new Uint8Array([0xFF, 0xAA, 0x02, 0x48, 0x00]))
+            sendCommand(new Uint8Array([0xFF, 0xAA, 0x02, 0xCF, 0x01]))
             setTimeout(() => {
                 saveConfig("data set")
             }, 200)
@@ -193,7 +193,7 @@ module.exports = function (app) {
         const decodeWit = 0.0054931640625   // (180.00 / 32768)
         const factRad = 0.0174532925199     // * pi/180
 
-        console.debug('parsed Data:', data)
+        app.debug('parsed Data:', data)
 
         if (checkWitData(data)) { // TODO: refactoring check data (NOW always true)
 
@@ -226,7 +226,7 @@ module.exports = function (app) {
             const time_millisecond = data.readUInt16LE(6)
             const time_checksum = data.readUInt8(8)
 
-            console.log(
+            app.log(
               'Year: ', (2000 +time_year).toFixed(0),
               'Month: ', time_month.toFixed(0),
               'Day: ', time_day.toFixed(0),
@@ -263,7 +263,7 @@ module.exports = function (app) {
             const temp = data.readInt16LE(acc_offset+8)/100
             const acc_checksum = data.readUInt8(acc_offset+10)
 
-            console.log(
+            app.log(
               'acc_ax: ', acc_ax,
               'acc_ay: ', acc_ay,
               'acc_az: ', acc_az,
@@ -294,7 +294,7 @@ module.exports = function (app) {
             const ang_temp = data.readInt16LE(ang_offset+8)/100
             const ang_checksum = data.readUInt8(ang_offset+10)
 
-            console.log(
+            app.log(
               'ang_wx: ', ang_wx,
               'ang_wy: ', ang_wy,
               'ang_wz: ', ang_wz,
@@ -329,7 +329,7 @@ module.exports = function (app) {
             const version = data.readUInt16LE(a_offset+ 8)
             const a_checksum = data.readUInt8(a_offset+ 10)
 
-            console.debug(
+            app.debug(
               '° roll:', (roll / factRad).toFixed(6),
               '° pitch', (pitch / factRad).toFixed(6),
               '° heading:', (hdm / factRad).toFixed(6),
@@ -357,7 +357,7 @@ module.exports = function (app) {
             const atmospheric_height = (parseInt(data.readInt32LE(atmospheric_offset+ 6))/100)
             const atmospheric_checksum = data.readUInt8(a_offset+ 10)
 
-            console.debug(
+            app.debug(
               '(hPa) Pressure:', atmospheric_pressure.toFixed(2),
               '(m) Altitude:', atmospheric_height.toFixed(2),
             )
@@ -380,7 +380,7 @@ module.exports = function (app) {
 
 
             //  send to SK
-            console.log( {
+            app.handleMessage(plugin.id, {
                 updates: [{
                     '$source': 'WIT.' + (index + 1).toString(),
                     values: [
