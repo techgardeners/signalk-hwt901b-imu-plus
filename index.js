@@ -5,8 +5,8 @@ const DelimiterParser = require('@serialport/parser-delimiter')
 const freqs = ["0.2Hz", "0.5Hz", "1Hz", "2Hz", "5Hz", "10Hz", "20Hz", "50Hz"]
 
 module.exports = function (app) {
-    var plugin = {};
-    var statusMessage
+    let plugin = {};
+    let statusMessage
 
     plugin.id = PLUGIN_ID
     plugin.name = "WITMOTION HWT901B serial IMU"
