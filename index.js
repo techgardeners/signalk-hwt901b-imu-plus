@@ -364,22 +364,137 @@ module.exports = function (app) {
               '(m) Altitude:', atmospheric_height.toFixed(2),
             )
 
+
             /******************************************************************
              * ****************************************************************
-             * Atmospheric Pressure and Height Output
+             * Longitude and Latitude Output
              *
-             * 0x55 0x56 P0 P1 P2 P3 H0 H1 H2 H3 SUM
+             * 0x55 0x57 Lon0 Lon 1 Lon 2 Lon 3 Lat0 Lat 1 Lat 2 Lat 3 SUM
              *
              * Calculated formular:
-             * Atmospheric pressure P = (( P3<<24)| ( P2<<16)| ( P1<<8)| P0 (Pa)
-             * Height H = (( H3<<24)| ( H2<<16)| ( H1<<8)| H0(cm)
-             * Checksum:
-             * Sum=0x55+0x54+P0+P1+P2+P3+H0+H1+H2+H3
+             * Longitude Lon = ((Lon 3<<24)| (Lon 2<<16)| (Lon 1<<8)| Lon 0
+             * In NMEA0183 standard , GPS output format is ddmm.mmmmm (dd for the
+             * degree, mm.mmmmm is after decimal point ), the module removes the
+             * decimal point during output, so the degree of longitude can be calculated as
+             * follows:
+             * dd=Lon/100000000;
+             * mm.mmmmm=(Lon%10000000)/100000;(% calculate Remainder)
+             * Latitude Lat = ((Lat 3<<24)| (Lat 2<<16)| (Lat 1<<8)| Lat 0 (cm)
+             * In NMEA0183 standard , GPS output format is ddmm.mmmmm (dd for the
+             * degree, mm.mmmmm is after the decimal point ), the module removes the
+             * decimal point during output, so the degree of latitude can be calculated as
+             * follows::
+             * dd=Lat/100000000;
+             * mm.mmmmm=(Lat%10000000)/100000;(% calculate Remainder)
              *
              * *****************************************************************
              *******************************************************************/
 
+            const gps_offset = 53;
+            const gps_header = data.readInt16LE(gps_offset+ 0);
+            const gps_latitude = data.readInt32LE(gps_offset+ 2)
+            const gps_longitude = data.readInt32LE(gps_offset+ 6)
+            const gps_checksum = data.readUInt8(gps_offset+ 10)
 
+            app.debug(
+              '(°) Latitude:', gps_latitude,
+              '(°) Longitudine:', gps_longitude,
+            )
+
+            /******************************************************************
+             * ****************************************************************
+             * Ground Speed Output
+             *
+             * 0x55 0x58 GPSHeightL GPSHeightH GPSYawL GPSYawH GPSV0 GPSV 1 GPSV 2 GPSV 3 SUM
+             *
+             * Calculated formular:
+             * GPSHeight = ((GPSHeightH<<8)| GPSHeightL)/10 (m)
+             * GPSYaw =( (GPSYawH <<8)| GPSYawL)/10 (°)
+             * GPSV = (((GPSV 3<<24)| (GPSV 2<<16)| (GPSV2<<8)|GPSV0)/1000 (km/h)
+             *
+             * Checksum:
+             * Sum=0x55+0x54+ GPSHeightL + GPSHeightH + GPSYawL + GPSYawH + GPSV0+ GPSV 1+ GPSV 2+ GPSV 3
+             *
+             * *****************************************************************
+             *******************************************************************/
+
+            const gps2_offset = 64;
+            const gps2_header = data.readInt16LE(gps2_offset+ 0)
+            const gps2_height = data.readInt16LE(gps2_offset+ 2)/10
+            const gps2_yaw = data.readUInt16LE(gps2_offset+ 4)/100
+            const gps2_speed = data.readUInt32LE(gps2_offset+ 6)
+            const gps2_checksum = data.readUInt8(gps2_offset+ 6)
+
+            app.debug(
+              '(m) Height:', gps2_height,
+              '(°) Yaw:', gps2_yaw,
+              '(m/s) Speed:', gps2_speed,
+            )
+
+            /******************************************************************
+             * ****************************************************************
+             * Quaternion
+             *
+             * 0x55 0x59 Q0L Q0H Q1L Q1H Q2L Q2H Q3L Q3H SUM
+             *
+             * Calculated formular:
+             * Q0=((Q0H<<8)|Q0L)/32768
+             * Q1=((Q1H<<8)|Q1L)/32768
+             * Q2=((Q2H<<8)|Q2L)/32768
+             * Q3=((Q3H<<8)|Q3L)/32768
+             * Checksum:
+             * Sum=0x55+0x59+Q0L+Q0H+Q1L +Q1H +Q2L+Q2H+Q3L+Q3H
+             *
+             * *****************************************************************
+             *******************************************************************/
+
+            const quaternion_offset = 75;
+            const quaternion_header = data.readInt16LE(quaternion_offset+ 0)
+            const quaternion_q0 = data.readInt16LE(quaternion_offset+ 2)/32768
+            const quaternion_q1 = data.readInt16LE(quaternion_offset+ 4)/32768
+            const quaternion_q2 = data.readUInt16LE(quaternion_offset+ 6)/32768
+            const quaternion_q3 = data.readUInt16LE(quaternion_offset+ 8)/32768
+            const quaternion_checksum = data.readUInt8(quaternion_offset+ 10)
+
+            app.debug(
+              'Q0:', quaternion_q0,
+              'Q1:', quaternion_q1,
+              'Q2:', quaternion_q2,
+              'Q3:', quaternion_q3,
+            )
+
+            /******************************************************************
+             * ****************************************************************
+             * Satellite Positioning Accuracy Output
+             *
+             * 0x55 0x5A SNL SNH PDOPL PDOPH HDOPL HDOPH VDOPL VDOPH SUM
+             *
+             * Calculated formula:
+             *
+             * Satellite quantity:SN=((SNH<<8)|SNL)
+             * Location positioning accuracy:PDOP=((PDOPH<<8)|PDOPL)/32768
+             * Horizontal positioning accuracy:HDOP=(( HDOPH<<8)| HDOPL)/32768
+             * Vertical positioning accuracy:VDOP=(( VDOPH<<8)| VDOPL)/32768
+             * Checksum:
+             * Sum=0x55+0x59+ SNL + SNH + PDOPL + PDOPH + HDOPL + HDOPH + VDOPL + VDOPH
+             *
+             * *****************************************************************
+             *******************************************************************/
+
+            const saccuracy_offset = 86;
+            const saccuracy_header = data.readInt16LE(saccuracy_offset+ 0)
+            const saccuracy_quantity = data.readInt16LE(saccuracy_offset+ 2)
+            const saccuracy_pdop = data.readInt16LE(saccuracy_offset+ 4)/32768
+            const saccuracy_hdop = data.readUInt16LE(saccuracy_offset+ 6)/32768
+            const saccuracy_vdop = data.readUInt16LE(saccuracy_offset+ 8)/32768
+            const saccuracy_checksum = data.readUInt8(saccuracy_offset+ 10)
+
+            app.debug(
+              'Quantity:', saccuracy_quantity,
+              'pdop:', saccuracy_pdop,
+              'hdop:', saccuracy_hdop,
+              'vdop:', saccuracy_vdop,
+            )
 
             //  send to SK
             app.handleMessage(plugin.id, {
@@ -424,15 +539,19 @@ module.exports = function (app) {
                         },
                         {
                             path: 'navigation.speedOverGround',
-                            value: 0
+                            value: gps2_speed
                         },
                         {
                             path: 'navigation.position',
                             value: {
-                                longitude: 0,
-                                latitude : 0,
-                                altitude: atmospheric_height
+                                longitude: gps_latitude,
+                                latitude : gps_longitude,
+                                altitude: gps2_height
                             }
+                        },
+                        {
+                            path: 'navigation.position.satellite.quantity',
+                            value: saccuracy_quantity
                         },
                         {
                             path: 'navigation.headingMagnetic',
