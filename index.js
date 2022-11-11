@@ -137,7 +137,7 @@ module.exports = function (app) {
 
         // set data set unconditionally
         setTimeout(() => {
-            sendCommand(new Uint8Array([0xFF, 0xAA, 0x02, 0xCF, 0x01]))
+            sendCommand(new Uint8Array([0xFF, 0xAA, 0x02, 0xCF, 0x07]))
             setTimeout(() => {
                 saveConfig("data set")
             }, 200)
