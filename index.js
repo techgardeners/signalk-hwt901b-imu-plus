@@ -594,13 +594,14 @@ module.exports = function (app) {
         }
 
         function checkWitData(data) {
-            if (data.byteLength == 9) {
+            if (data.byteLength == 97) {
                 var checksum = 168  // 0x55 + 0x53  Angle record
                 for (i = 0; i < 8; i++) { checksum += data.readUInt8(i) }
                 if (data.readUInt8(8) == checksum % 256) { return true }
+                
+                return true;
             }
 
-            return true;
         }
 
         return false
