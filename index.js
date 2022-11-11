@@ -9,7 +9,7 @@ module.exports = function (app) {
     let statusMessage
 
     plugin.id = PLUGIN_ID
-    plugin.name = "signalk-hwt901b-imu-plus"
+    plugin.name = "WITMOTION HWT901B/WTGAHRS1/WTGAHRS2 IMU"
     plugin.description = "SignalK plugin reading informations from WITMOTION's HWT910B and WTGAHRS1/WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu"
 
     plugin.schema = {
@@ -60,18 +60,18 @@ module.exports = function (app) {
     }
 
     const setPluginStatus = app.setPluginStatus
-      ? (msg) => {
-          app.setPluginStatus(msg)
-          statusMessage = msg
-      }
-      : (msg) => { statusMessage = msg }
+        ? (msg) => {
+            app.setPluginStatus(msg)
+            statusMessage = msg
+        }
+        : (msg) => { statusMessage = msg }
 
     const setPluginError = app.setPluginError
-      ? (msg) => {
-          app.setPluginError(msg)
-          statusMessage = `error: ${msg}`
-      }
-      : (msg) => { statusMessage = `error: ${msg}` }
+        ? (msg) => {
+            app.setPluginError(msg)
+            statusMessage = `error: ${msg}`
+        }
+        : (msg) => { statusMessage = `error: ${msg}` }
 
     plugin.start = function (options) {
         plugin.reconnectDelay = 1000
@@ -228,13 +228,13 @@ module.exports = function (app) {
             const time_checksum = data.readUInt8(8)
 
             app.debug(
-              'Year: ', time_year,
-              'Month: ', time_month,
-              'Day: ', time_day,
-              'Hour: ', time_hour,
-              'Minute: ', time_minute,
-              'Second: ', time_second,
-              'Millisecond: ', time_millisecond
+                'Year: ', time_year,
+                'Month: ', time_month,
+                'Day: ', time_day,
+                'Hour: ', time_hour,
+                'Minute: ', time_minute,
+                'Second: ', time_second,
+                'Millisecond: ', time_millisecond
             )
 
 
@@ -265,10 +265,10 @@ module.exports = function (app) {
             const acc_checksum = data.readUInt8(acc_offset+10)
 
             app.debug(
-              '° acc_ax: ', acc_ax,
-              '° acc_ay: ', acc_ay,
-              '° acc_az: ', acc_az,
-              '(K) temp: ', temp
+                '° acc_ax: ', acc_ax,
+                '° acc_ay: ', acc_ay,
+                '° acc_az: ', acc_az,
+                '(K) temp: ', temp
             )
 
             /******************************************************************
@@ -296,10 +296,10 @@ module.exports = function (app) {
             const ang_checksum = data.readUInt8(ang_offset+10)
 
             app.debug(
-              '° ang_wx: ', ang_wx,
-              '° ang_wy: ', ang_wy,
-              '° ang_wz: ', ang_wz,
-              '(K) temp: ', ang_temp
+                '° ang_wx: ', ang_wx,
+                '° ang_wy: ', ang_wy,
+                '° ang_wz: ', ang_wz,
+                '(K) temp: ', ang_temp
             )
 
             /******************************************************************
@@ -332,11 +332,11 @@ module.exports = function (app) {
             const a_checksum = data.readUInt8(a_offset+ 10)
 
             app.debug(
-              '° roll:', (roll / factRad).toFixed(6),
-              '° pitch', (pitch / factRad).toFixed(6),
-              '° heading:', (hdm / factRad).toFixed(6),
-              '° yaw:', (yaw / factRad).toFixed(6),
-              '° hdm:', hdm
+                '° roll:', (roll / factRad).toFixed(6),
+                '° pitch', (pitch / factRad).toFixed(6),
+                '° heading:', (hdm / factRad).toFixed(6),
+                '° yaw:', (yaw / factRad).toFixed(6),
+                '° hdm:', hdm
             )
 
             /******************************************************************
@@ -361,8 +361,8 @@ module.exports = function (app) {
             const atmospheric_checksum = data.readUInt8(a_offset+ 10)
 
             app.debug(
-              '(Pa) Pressure:', atmospheric_pressure,
-              '(m) Altitude:', atmospheric_height.toFixed(2),
+                '(Pa) Pressure:', atmospheric_pressure,
+                '(m) Altitude:', atmospheric_height.toFixed(2),
             )
 
 
@@ -397,25 +397,25 @@ module.exports = function (app) {
             const gps_latitude = data.readInt32LE(gps_offset+ 6)
             const gps_checksum = data.readUInt8(gps_offset+ 10)
 
-            let latitude_dd = parseInt(gps_latitude/100000000)
-            let latitude_mm= (gps_latitude%10000000)/100000
+            let latitude_dd = parseInt(gps_latitude/10000000)
+            let latitude_mm= (gps_latitude%10000000)/100000/60
 
-            let longitude_dd = parseInt(gps_longitude/100000000)
-            let longitude_mm = (gps_longitude%10000000)/100000
+            let longitude_dd = parseInt(gps_longitude/10000000)
+            let longitude_mm = (gps_longitude%10000000)/100000/60
 
-            let final_latitude = gps_latitude/10000000
-            let final_longitude = gps_longitude/10000000
+            let final_latitude = latitude_dd + latitude_mm
+            let final_longitude = longitude_dd + longitude_mm
 
 
             app.debug(
-              '(°) Latitude:', gps_latitude,
-              '(°) Longitudine:', gps_longitude,
-              '(°) Latitude (NMEA0183) :', final_latitude,
-              '(°) Latitude (NMEA0183) dd:', latitude_dd,
-              '(°) Latitude (NMEA0183) mm:', latitude_mm,
-              '(°) Longitude (NMEA0183) :', final_longitude,
-              '(°) Longitude (NMEA0183) dd:', longitude_dd,
-              '(°) Longitude (NMEA0183) mm:', longitude_mm
+                '(°) Latitude:', gps_latitude,
+                '(°) Longitudine:', gps_longitude,
+                '(°) Latitude (NMEA0183) :', final_latitude,
+                '(°) Latitude (NMEA0183) dd:', latitude_dd,
+                '(°) Latitude (NMEA0183) mm:', latitude_mm,
+                '(°) Longitude (NMEA0183) :', final_longitude,
+                '(°) Longitude (NMEA0183) dd:', longitude_dd,
+                '(°) Longitude (NMEA0183) mm:', longitude_mm
             )
 
             /******************************************************************
@@ -443,10 +443,10 @@ module.exports = function (app) {
             const gps2_checksum = data.readUInt8(gps2_offset+ 6)
 
             app.debug(
-              '(m) Height:', gps2_height,
-              '(°) Yaw:', gps2_yaw,
-              '(rad) Yaw:', toRad(gps2_yaw),
-              '(m/s) Speed:', gps2_speed,
+                '(m) Height:', gps2_height,
+                '(°) Yaw:', gps2_yaw,
+                '(rad) Yaw:', toRad(gps2_yaw),
+                '(m/s) Speed:', gps2_speed,
             )
 
             /******************************************************************
@@ -475,10 +475,10 @@ module.exports = function (app) {
             const quaternion_checksum = data.readUInt8(quaternion_offset+ 10)
 
             app.debug(
-              'Q0:', quaternion_q0,
-              'Q1:', quaternion_q1,
-              'Q2:', quaternion_q2,
-              'Q3:', quaternion_q3,
+                'Q0:', quaternion_q0,
+                'Q1:', quaternion_q1,
+                'Q2:', quaternion_q2,
+                'Q3:', quaternion_q3,
             )
 
             /******************************************************************
@@ -508,10 +508,10 @@ module.exports = function (app) {
             const saccuracy_checksum = data.readUInt8(saccuracy_offset+ 10)
 
             app.debug(
-              'Quantity:', saccuracy_quantity,
-              'pdop:', saccuracy_pdop,
-              'hdop:', saccuracy_hdop,
-              'vdop:', saccuracy_vdop,
+                'Quantity:', saccuracy_quantity,
+                'pdop:', saccuracy_pdop,
+                'hdop:', saccuracy_hdop,
+                'vdop:', saccuracy_vdop,
             )
 
             //  send to SK
@@ -629,8 +629,8 @@ module.exports = function (app) {
         app.debug('plugin.stop')
         if (plugin.serialPorts) {
             plugin.serialPorts.forEach(serial => {
-                  serial.close()
-              }
+                    serial.close()
+                }
             )
             plugin.serialPorts = []
         }
