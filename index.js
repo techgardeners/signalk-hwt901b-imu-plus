@@ -533,19 +533,19 @@ module.exports = function (app) {
                         },
                         {
                             path: 'navigation.acceleration.az',
-                            value: acc_az
+                            value: acc_az - 9.8
                         },
                         {
                             path: 'navigation.angular_velocity.wx',
-                            value: ang_wx
+                            value: (ang_wx * 0.0174532925199433)
                         },
                         {
                             path: 'navigation.angular_velocity.wy',
-                            value: ang_wy
+                            value: (ang_wy * 0.0174532925199433)
                         },
                         {
                             path: 'navigation.angular_velocity.wz',
-                            value: ang_wz
+                            value: (ang_wz * 0.0174532925199433)
                         },
                         {
                             path: 'environment.inside.pressure',
