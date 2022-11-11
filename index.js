@@ -392,13 +392,29 @@ module.exports = function (app) {
 
             const gps_offset = 53;
             const gps_header = data.readInt16LE(gps_offset+ 0);
-            const gps_latitude = data.readInt32LE(gps_offset+ 2)
-            const gps_longitude = data.readInt32LE(gps_offset+ 6)
+            const gps_longitude = data.readInt32LE(gps_offset+ 2)
+            const gps_latitude = data.readInt32LE(gps_offset+ 6)
             const gps_checksum = data.readUInt8(gps_offset+ 10)
+
+            let latitude_dd = parseInt(gps_latitude/100000000)
+            let latitude_mm= (gps_latitude%10000000)/100000
+
+            let longitude_dd = parseInt(gps_longitude/100000000)
+            let longitude_mm = (gps_longitude%10000000)/100000
+
+            let final_latitude = gps_latitude/10000000
+            let final_longitude = gps_longitude/10000000
+
 
             app.debug(
               '(°) Latitude:', gps_latitude,
               '(°) Longitudine:', gps_longitude,
+              '(°) Latitude (NMEA0183) :', final_latitude,
+              '(°) Latitude (NMEA0183) dd:', latitude_dd,
+              '(°) Latitude (NMEA0183) mm:', latitude_mm,
+              '(°) Longitude (NMEA0183) :', final_longitude,
+              '(°) Longitude (NMEA0183) dd:', longitude_dd,
+              '(°) Longitude (NMEA0183) mm:', longitude_mm
             )
 
             /******************************************************************
@@ -544,8 +560,8 @@ module.exports = function (app) {
                         {
                             path: 'navigation.position',
                             value: {
-                                longitude: gps_latitude,
-                                latitude : gps_longitude,
+                                longitude: final_longitude,
+                                latitude : final_latitude,
                                 altitude: gps2_height
                             }
                         },
