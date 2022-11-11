@@ -9,7 +9,7 @@ module.exports = function (app) {
     let statusMessage
 
     plugin.id = PLUGIN_ID
-    plugin.name = "WITMOTION HWT901B/WTGAHRS1/WTGAHRS2 IMU"
+    plugin.name = "signalk-hwt901b-imu-plus"
     plugin.description = "SignalK plugin reading informations from WITMOTION's HWT910B and WTGAHRS1/WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu"
 
     plugin.schema = {
