@@ -445,7 +445,7 @@ module.exports = function (app) {
             app.debug(
                 '(m) Height:', gps2_height,
                 '(°) Yaw:', gps2_yaw,
-                '(rad) Yaw:', toRad(gps2_yaw),
+                '(rad) Yaw:', toRadRaw(gps2_yaw),
                 '(m/s) Speed:', gps2_speed,
             )
 
@@ -537,15 +537,15 @@ module.exports = function (app) {
                         },
                         {
                             path: 'navigation.angular_velocity.wx',
-                            value: (ang_wx * 0.0174532925199433)
+                            value: toRadRaw(ang_wx)
                         },
                         {
                             path: 'navigation.angular_velocity.wy',
-                            value: (ang_wy * 0.0174532925199433)
+                            value: toRadRaw(ang_wy)
                         },
                         {
                             path: 'navigation.angular_velocity.wz',
-                            value: (ang_wz * 0.0174532925199433)
+                            value: toRadRaw(ang_wz)
                         },
                         {
                             path: 'environment.inside.pressure',
@@ -577,7 +577,7 @@ module.exports = function (app) {
                         },
                         {
                             path: 'navigation.courseOverGroundTrue',
-                            value: toRad(gps2_yaw)
+                            value: toRadRaw(gps2_yaw)
                         },
                         {
                             path: 'navigation.attitude',
@@ -595,6 +595,12 @@ module.exports = function (app) {
 
         function toRad(value) {
             value *= decodeWit
+            value >= 180.00 ? value -= 360 : value
+            return (value * factRad)
+        }
+
+
+        function toRadRaw(value) {
             value >= 180.00 ? value -= 360 : value
             return (value * factRad)
         }
