@@ -335,7 +335,8 @@ module.exports = function (app) {
               '° roll:', (roll / factRad).toFixed(6),
               '° pitch', (pitch / factRad).toFixed(6),
               '° heading:', (hdm / factRad).toFixed(6),
-              '° yaw:', (yaw / factRad).toFixed(6)
+              '° yaw:', (yaw / factRad).toFixed(6),
+              '° hdm:', hdm
             )
 
             /******************************************************************
@@ -444,6 +445,7 @@ module.exports = function (app) {
             app.debug(
               '(m) Height:', gps2_height,
               '(°) Yaw:', gps2_yaw,
+              '(rad) Yaw:', toRad(gps2_yaw),
               '(m/s) Speed:', gps2_speed,
             )
 
@@ -570,8 +572,12 @@ module.exports = function (app) {
                             value: saccuracy_quantity
                         },
                         {
-                            path: 'navigation.headingMagnetic',
+                            path: 'navigation.courseOverGroundMagnetic',
                             value: hdm
+                        },
+                        {
+                            path: 'navigation.courseOverGroundTrue',
+                            value: toRad(gps2_yaw)
                         },
                         {
                             path: 'navigation.attitude',
@@ -598,7 +604,7 @@ module.exports = function (app) {
                 var checksum = 168  // 0x55 + 0x53  Angle record
                 for (i = 0; i < 8; i++) { checksum += data.readUInt8(i) }
                 if (data.readUInt8(8) == checksum % 256) { return true }
-                
+
                 return true;
             }
 
