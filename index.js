@@ -9,8 +9,8 @@ module.exports = function (app) {
     let statusMessage
 
     plugin.id = PLUGIN_ID
-    plugin.name = "WITMOTION HWT901B serial IMU"
-    plugin.description = "SignalK node server plugin reading roll, pitch and magnetic heading from WITMOTION's HWT910B sensor"
+    plugin.name = "WITMOTION HWT901B/WTGAHRS1/WTGAHRS2 IMU"
+    plugin.description = "SignalK plugin reading informations from WITMOTION's HWT910B and WTGAHRS1/WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu"
 
     plugin.schema = {
         type: "object",

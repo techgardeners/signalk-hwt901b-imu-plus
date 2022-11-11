@@ -1,13 +1,15 @@
 {
   "name": "signalk-hwt901b-imu-plus",
-  "version": "0.0.2",
-  "description": "SignalK plugin reading (some) informations from WITMOTION's HWT910B and WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu",
+  "version": "0.0.3",
+  "description": "SignalK plugin reading (some) informations from WITMOTION's HWT910B and WTGAHRS1/WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu",
   "main": "index.js",
   "keywords": [
     "signalk-node-server-plugin",
     "signalk-category-hardware",
     "HWT901B-232",
-    "WTGAHRS2"
+    "WTGAHRS1",
+    "WTGAHRS2",
+    "WTGAHRS3"
   ],
   "author": "Roberto Beccaceci <info@techgardeners.com>",
   "license": "Apache-2.0",
