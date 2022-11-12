@@ -439,7 +439,7 @@ module.exports = function (app) {
             const gps2_header = data.readInt16LE(gps2_offset+ 0)
             const gps2_height = data.readInt16LE(gps2_offset+ 2)/10
             const gps2_yaw = data.readUInt16LE(gps2_offset+ 4)/100
-            const gps2_speed = data.readUInt32LE(gps2_offset+ 6)
+            const gps2_speed = data.readUInt32LE(gps2_offset+ 6)/1000/3.6
             const gps2_checksum = data.readUInt8(gps2_offset+ 6)
 
             app.debug(
