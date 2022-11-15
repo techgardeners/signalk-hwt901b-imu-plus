@@ -111,7 +111,7 @@ module.exports = function (app) {
             serial.on('open', function () {
                 const parser = serial.pipe(new DelimiterParser({ delimiter: '\x55\x50' }))
                 plugin.reconnectDelay = 1000
-                parser.on('data', data => { parseData(device.zOffset, data, index) })
+                parser.on('data', data => { parseData(device, device.zOffset, data, index) })
                 setPluginStatus(`connected to ${device.usbDevice}:${index}`)
             })
 
@@ -202,7 +202,7 @@ module.exports = function (app) {
         }
     }
 
-    function parseData(zOffset, data, index) {
+    function parseData(device, zOffset, data, index) {
 
         const decodeWit = 0.0054931640625   // (180.00 / 32768)
         const factRad = 0.0174532925199     // * pi/180
