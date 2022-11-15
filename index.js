@@ -3,7 +3,7 @@ const SerialPort = require('serialport')
 const DelimiterParser = require('@serialport/parser-delimiter')
 
 const freqs = ["0.2Hz", "0.5Hz", "1Hz", "2Hz", "5Hz", "10Hz", "20Hz", "50Hz"]
-const bauds = ["9600"]
+const bauds = ["2400","4800","9600","19200","38400","57600","115200","230400","460800","921600"]
 
 module.exports = function (app) {
     let plugin = {};
@@ -99,7 +99,7 @@ module.exports = function (app) {
         app.debug('plugin.connect')
         console.log(`connecting to ${device.usbDevice}:${index}`)
         try {
-            let serial = new SerialPort(device.usbDevice, { baudRate: device.baudRate })
+            let serial = new SerialPort(device.usbDevice, { baudRate: parseInt(device.baudRate) })
             plugin.serialPorts[index] = serial
 
             serial.on('open', function () {
