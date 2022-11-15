@@ -1,6 +1,6 @@
 {
   "name": "signalk-hwt901b-imu-plus",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "SignalK plugin reading (some) information from WITMOTION's HWT910B and WTGAHRS1/WTGAHRS2 sensors, based on W-Geronius/signalk-hwt901b-imu",
   "main": "index.js",
   "keywords": [

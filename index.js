@@ -275,14 +275,14 @@ module.exports = function (app) {
             const acc_ax = data.readInt16LE(acc_offset+2)/32768*16*9.8
             const acc_ay = data.readInt16LE(acc_offset+4)/32768*16*9.8
             const acc_az = data.readInt16LE(acc_offset+6)/32768*16*9.8
-            const temp = (data.readInt16LE(acc_offset+8)/100) + 273.15 // To Kelvin value
+            const temp = (data.readInt16LE(acc_offset+8)/100) + 273.15 + device.tempOffset // To Kelvin value
             const acc_checksum = data.readUInt8(acc_offset+10)
 
             app.debug(
                 '° acc_ax: ', acc_ax,
                 '° acc_ay: ', acc_ay,
                 '° acc_az: ', acc_az,
-                '(K) temp: ', temp + device.tempOffset
+                '(K) temp: ', temp
             )
 
             /******************************************************************
@@ -306,14 +306,14 @@ module.exports = function (app) {
             const ang_wx = data.readInt16LE(ang_offset+2)/32768*2000
             const ang_wy = data.readInt16LE(ang_offset+4)/32768*2000
             const ang_wz = data.readInt16LE(ang_offset+6)/32768*2000
-            const ang_temp = (data.readInt16LE(ang_offset+8)/100) + 273.15
+            const ang_temp = (data.readInt16LE(ang_offset+8)/100) + 273.15 + device.tempOffset
             const ang_checksum = data.readUInt8(ang_offset+10)
 
             app.debug(
                 '° ang_wx: ', ang_wx,
                 '° ang_wy: ', ang_wy,
                 '° ang_wz: ', ang_wz,
-                '(K) temp: ', ang_temp + device.tempOffset
+                '(K) temp: ', ang_temp
             )
 
             /******************************************************************
