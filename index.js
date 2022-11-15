@@ -60,6 +60,12 @@ module.exports = function (app) {
                             title: "Heading Offset",
                             description: "heading degrees offset (-180.0° to 180.0°)",
                             default: 0.0
+                        },
+                        tempOffset: {
+                            type: "number",
+                            title: "Temperature Offset",
+                            description: "Temperature offset on Celsius",
+                            default: 0.0
                         }
                     }
                 }
@@ -276,7 +282,7 @@ module.exports = function (app) {
                 '° acc_ax: ', acc_ax,
                 '° acc_ay: ', acc_ay,
                 '° acc_az: ', acc_az,
-                '(K) temp: ', temp
+                '(K) temp: ', temp + device.tempOffset
             )
 
             /******************************************************************
@@ -307,7 +313,7 @@ module.exports = function (app) {
                 '° ang_wx: ', ang_wx,
                 '° ang_wy: ', ang_wy,
                 '° ang_wz: ', ang_wz,
-                '(K) temp: ', ang_temp
+                '(K) temp: ', ang_temp + device.tempOffset
             )
 
             /******************************************************************
