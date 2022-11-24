@@ -140,7 +140,6 @@ module.exports = function (app) {
                             "displayName": "angular velocity Z",
                         }
                     }
-
                 ]
             }]
         });
@@ -628,18 +627,22 @@ module.exports = function (app) {
                         },
                         {
                             path: 'navigation.speedOverGround',
-                            value: gps2_speed
+                            value: (saccuracy_quantity > 0 ) ? gps2_speed : null
                         },
                         {
                             path: 'navigation.position',
                             value: {
-                                longitude: final_longitude,
-                                latitude : final_latitude,
-                                altitude: gps2_height
+                                longitude: (saccuracy_quantity > 0 ) ? final_longitude : null,
+                                latitude : (saccuracy_quantity > 0 ) ? final_latitude : null,
+                                altitude: (saccuracy_quantity > 0 ) ? gps2_height : null
                             }
                         },
                         {
-                            path: 'navigation.position.satellite.quantity',
+                            path: 'navigation.gnss.antennaAltitude',
+                            value: (saccuracy_quantity > 0 ) ? gps2_height : null
+                        },
+                        {
+                            path: 'navigation.gnss.satellites',
                             value: saccuracy_quantity
                         },
                         {
