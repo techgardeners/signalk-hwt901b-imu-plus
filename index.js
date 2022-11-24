@@ -88,6 +88,63 @@ module.exports = function (app) {
         : (msg) => { statusMessage = `error: ${msg}` }
 
     plugin.start = function (options) {
+
+        app.handleMessage(plugin.id, {
+            updates: [{
+                meta: [
+                    {
+                        "path": "navigation.acceleration.ax",
+                        "value": {
+                            "description": "Acceleration on X axis",
+                            "units": "m/s2",
+                            "displayName": "X acceleration",
+                        }
+                    },
+                    {
+                        "path": "navigation.acceleration.ay",
+                        "value": {
+                            "description": "Acceleration on Y axis",
+                            "units": "m/s2",
+                            "displayName": "Y acceleration",
+                        }
+                    },
+                    {
+                        "path": "navigation.acceleration.az",
+                        "value": {
+                            "description": "Acceleration on Z axis",
+                            "units": "m/s2",
+                            "displayName": "Z acceleration",
+                        }
+                    },
+                    {
+                        "path": "navigation.angular_velocity.wx",
+                        "value": {
+                            "description": "angular velocity on X axis",
+                            "units": "rad/s",
+                            "displayName": "angular velocity X",
+                        }
+                    },
+                    {
+                        "path": "navigation.angular_velocity.wy",
+                        "value": {
+                            "description": "angular velocity on Y axis",
+                            "units": "rad/s",
+                            "displayName": "angular velocity Y",
+                        }
+                    },
+                    {
+                        "path": "navigation.angular_velocity.wz",
+                        "value": {
+                            "description": "angular velocity on Z axis",
+                            "units": "rad/s",
+                            "displayName": "angular velocity Z",
+                        }
+                    }
+
+                ]
+            }]
+        });
+
         plugin.reconnectDelay = 1000
         let devices = options.devices
         plugin.serialPorts = []
